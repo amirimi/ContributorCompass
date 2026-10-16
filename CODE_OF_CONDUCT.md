@@ -36,7 +36,7 @@ contributors of projects surfaced by the catalog.
 ## Reporting and enforcement
 
 For a confidential report, use the repository's
-[private reporting form](https://github.com/amk9978/contribution-compass/security/advisories/new) and
+[private reporting form](https://github.com/amirimi/contribution-compass/security/advisories/new) and
 prefix the title with `[CONDUCT]`. Do not open a public issue containing sensitive personal details.
 
 The maintainer will review reports in context, protect privacy where practical, and choose a

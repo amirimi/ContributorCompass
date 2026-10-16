@@ -1,7 +1,7 @@
 # Contribution Compass
 
-[![CI](https://github.com/amk9978/contribution-compass/actions/workflows/ci.yml/badge.svg)](https://github.com/amk9978/contribution-compass/actions/workflows/ci.yml)
-[![Pages](https://github.com/amk9978/contribution-compass/actions/workflows/pages.yml/badge.svg)](https://amk9978.github.io/contribution-compass/)
+[![CI](https://github.com/amirimi/contribution-compass/actions/workflows/ci.yml/badge.svg)](https://github.com/amirimi/contribution-compass/actions/workflows/ci.yml)
+[![Pages](https://github.com/amirimi/contribution-compass/actions/workflows/pages.yml/badge.svg)](https://amirimi.github.io/contribution-compass/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-4c9aff.svg)](LICENSE)
 
 > **V2 rewrite in progress:** the previous repository-monitoring and issue-feed prototype has been

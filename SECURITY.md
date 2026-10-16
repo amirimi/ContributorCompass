@@ -10,7 +10,7 @@ release is the supported version.
 Please do not disclose a suspected vulnerability in a public issue.
 
 Use GitHub's
-[private vulnerability reporting form](https://github.com/amk9978/contribution-compass/security/advisories/new)
+[private vulnerability reporting form](https://github.com/amirimi/contribution-compass/security/advisories/new)
 to send a confidential report. Include:
 
 - the affected version or commit;

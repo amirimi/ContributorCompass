@@ -7,6 +7,7 @@ from compass.domain import (
     RecommendationGroup,
     TopicProject,
 )
+from compass.views.attribution import EXPLORE_ATTRIBUTION
 from compass.views.recommendations import EMPTY_BUCKET, render_group
 from tests.fixtures import AS_OF, POLICY_VERSION, SAMPLE_GROUP
 
@@ -76,3 +77,7 @@ def test_unknown_axis_is_not_rendered_as_zero() -> None:
 
 def test_as_of_is_dated() -> None:
     assert "as of 2026-09-05" in render_group(SAMPLE_GROUP)
+
+
+def test_explore_vocabulary_is_credited() -> None:
+    assert render_group(SAMPLE_GROUP).endswith(EXPLORE_ATTRIBUTION)

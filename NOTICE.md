@@ -32,3 +32,22 @@ The upstream license notice is reproduced below:
 > LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 > SOFTWARE.
+
+## Topic vocabulary
+
+`vocabulary.json` holds data derived from two GitHub-maintained sources, and published
+recommendations print the github/explore credit line.
+
+- Topic names, aliases and related topics come from
+  [github/explore](https://github.com/github/explore), licensed under
+  [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Contribution Compass keeps
+  only the `topic`, `aliases` and `related` fields of each topic page.
+- Language names and aliases come from
+  [GitHub Linguist](https://github.com/github-linguist/linguist) `languages.yml`,
+  Copyright (c) 2017 GitHub, Inc., licensed under the MIT License whose text is reproduced
+  above.
+- Tag clusters in `clusters.json` are computed with
+  [minishlab/potion-base-8M](https://huggingface.co/minishlab/potion-base-8M), licensed
+  under the MIT License, through [model2vec](https://github.com/MinishLab/model2vec),
+  licensed under the MIT License. The model is downloaded at build time and is not
+  redistributed.

@@ -2,17 +2,22 @@ import datetime
 import logging
 
 from compass.adapters import GitHubClient, TopicCache, format_github_handle
-from compass.application.personal_info import get_topic_projects, get_topics_frequencies
-from compass.domain import PersonalTopicsFile, ProjectTopicsFile
+from compass.application.personal_info import (
+    get_topic_projects,
+    languages_frequency,
+    recent_user_repos,
+    topics_frequency,
+)
+from compass.domain import PersonalProfileFile, ProjectTopicsFile
 
 logger = logging.getLogger(__name__)
 
 
-def load_fresh_personal_topics(
+def load_fresh_profile(
     github_handle: str,
     cache: TopicCache,
     stale_after: datetime.timedelta,
-) -> PersonalTopicsFile | None:
+) -> PersonalProfileFile | None:
     cached = cache.load_personal()
 
     if cached is None:
@@ -27,14 +32,14 @@ def load_fresh_personal_topics(
     return cached
 
 
-def collect_topics(
+def collect_profile(
     github_handle: str,
     github: GitHubClient,
     cache: TopicCache,
     stale_after: datetime.timedelta,
-) -> PersonalTopicsFile:
+) -> PersonalProfileFile:
     formatted_github_handle = format_github_handle(github_handle)
-    cached = load_fresh_personal_topics(
+    cached = load_fresh_profile(
         github_handle=formatted_github_handle,
         cache=cache,
         stale_after=stale_after,
@@ -43,19 +48,17 @@ def collect_topics(
     if cached is not None:
         return cached
 
-    logger.info("Fetching topics for %s", formatted_github_handle)
+    logger.info("Fetching the profile for %s", formatted_github_handle)
 
-    topics = get_topics_frequencies(
+    repos = recent_user_repos(github_handle=formatted_github_handle, github=github)
+    profile = PersonalProfileFile(
         github_handle=formatted_github_handle,
-        github=github,
+        topics_frequency=topics_frequency(repos),
+        languages_frequency=languages_frequency(repos),
     )
-    personal_topics = PersonalTopicsFile(
-        github_handle=formatted_github_handle,
-        topics_frequency=topics,
-    )
-    cache.save_personal(personal_topics)
+    cache.save_personal(profile)
 
-    return personal_topics
+    return profile
 
 
 def collect_project_topics(
@@ -118,14 +121,14 @@ def collect_topic_pages(
     project_stale_after: datetime.timedelta,
     max_topics: int | None,
 ) -> None:
-    personal_topics = collect_topics(
+    profile = collect_profile(
         github_handle=github_handle,
         github=github,
         cache=cache,
         stale_after=personal_stale_after,
     )
     topics = stale_topics_oldest_first(
-        topics_frequency=personal_topics.topics_frequency,
+        topics_frequency=profile.topics_frequency,
         cache=cache,
         stale_after=project_stale_after,
     )

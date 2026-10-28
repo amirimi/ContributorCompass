@@ -1,6 +1,6 @@
 {
-    "creation_date": "2026-10-28T09:37:06.801532Z",
-    "update_date": "2026-10-28T09:37:06.801535Z",
+    "creation_date": "2026-10-28T09:06:21.990985Z",
+    "update_date": "2026-10-28T09:06:21.990990Z",
     "github_handle": "amirkarimi",
     "topics_frequency": [
         [
@@ -89,6 +89,44 @@
         ],
         [
             "vim-like",
+            1
+        ]
+    ],
+    "languages_frequency": [
+        [
+            "Python",
+            7
+        ],
+        [
+            "JavaScript",
+            2
+        ],
+        [
+            "Ruby",
+            1
+        ],
+        [
+            "HTML",
+            1
+        ],
+        [
+            "Scala",
+            1
+        ],
+        [
+            "Xonsh",
+            1
+        ],
+        [
+            "Rust",
+            1
+        ],
+        [
+            "Shell",
+            1
+        ],
+        [
+            "Lua",
             1
         ]
     ]

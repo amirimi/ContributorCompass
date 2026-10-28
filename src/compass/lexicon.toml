@@ -1,0 +1,146 @@
+meta = [
+    "hacktoberfest",
+    "hacktoberfest-accepted",
+    "hacktoberfest2019",
+    "hacktoberfest2020",
+    "hacktoberfest2021",
+    "hacktoberfest2022",
+    "hacktoberfest2023",
+    "hacktoberfest2024",
+    "hacktoberfest2025",
+    "hacktoberfest2026",
+    "good-first-issue",
+    "good-first-issues",
+    "first-timers-only",
+    "beginner-friendly",
+    "help-wanted",
+    "up-for-grabs",
+    "open-source",
+    "opensource",
+    "oss",
+    "free",
+    "app",
+    "apps",
+    "application",
+]
+
+reclaim_from_linguist = [
+    "vim",
+    "nvim",
+    "emacs",
+    "kak",
+    "rpc",
+    "edge",
+    "fluent",
+    "io",
+    "llvm",
+    "nixos",
+    "mint",
+    "fb",
+    "click",
+    "ats",
+    "console",
+]
+
+both_axes = [
+    "neovim",
+    "vim",
+    "emacs",
+    "vscode",
+    "browser",
+    "terminal",
+    "git",
+    "llm",
+    "kubernetes",
+    "raspberry-pi",
+]
+
+[tooling.frameworks]
+react = ["reactjs", "react-js"]
+nextjs = ["next-js", "next"]
+vue = ["vuejs", "vue3", "vue-js"]
+angular = ["angularjs"]
+nodejs = ["node", "node-js"]
+deno = []
+bun = []
+express = ["expressjs"]
+django = []
+flask = []
+fastapi = []
+rails = ["ruby-on-rails"]
+laravel = []
+spring = ["spring-boot", "springboot"]
+numpy = []
+pandas = []
+pytorch = ["torch"]
+tensorflow = []
+scikit-learn = ["sklearn"]
+jax = []
+langchain = []
+pydantic = []
+sqlalchemy = []
+tokio = []
+actix = ["actix-web"]
+axum = []
+gin = ["gin-gonic"]
+electron = ["electron-app"]
+tauri = []
+flutter = []
+react-native = []
+tailwindcss = ["tailwind"]
+bootstrap = []
+jquery = []
+vite = ["vitejs"]
+webpack = []
+qt = ["pyqt", "pyqt5", "pyqt6", "pyside", "pyside6", "qt5", "qt6"]
+gtk = ["gtk3", "gtk4"]
+textual = []
+ratatui = []
+bubbletea = []
+unity = ["unity3d"]
+godot = ["godot-engine"]
+
+[tooling.platforms]
+linux = []
+macos = ["osx", "mac", "mac-os"]
+windows = ["windows-10", "windows-11"]
+android = []
+ios = []
+wsl = []
+freebsd = []
+docker = ["docker-image"]
+github-actions = ["actions", "github-action"]
+arduino = []
+esp32 = []
+e-ink = ["eink", "epaper", "e-paper"]
+
+[tooling.interfaces]
+cli = ["command-line", "commandline", "command-line-interface", "command-line-tool", "cli-tool", "cli-app"]
+tui = ["terminal-ui", "terminal-user-interface"]
+gui = []
+api = ["apis"]
+rest-api = ["restful-api"]
+web-app = ["webapp", "web-application"]
+desktop-app = ["desktop-application"]
+self-hosted = ["selfhosted", "self-hosting"]
+
+[tooling.shapes]
+library = ["lib", "libraries"]
+sdk = []
+framework = ["frameworks", "web-framework"]
+plugin = ["plugins", "addon", "add-on"]
+extension = ["extensions"]
+neovim-plugin = ["nvim-plugin", "neovim-plugins", "nvim-plugins"]
+vim-plugin = ["vim-plugins"]
+browser-extension = ["chrome-extension", "firefox-extension", "webextension"]
+vscode-extension = ["vscode-extensions"]
+
+[tooling.architectures]
+microservices = ["microservice"]
+serverless = []
+monorepo = []
+event-driven = ["event-driven-architecture"]
+onion-architecture = []
+hexagonal-architecture = ["ports-and-adapters"]
+clean-architecture = []
+ddd = ["domain-driven-design"]

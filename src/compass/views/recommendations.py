@@ -1,4 +1,5 @@
 from compass.domain import Bucket, Evaluation, Recommendation, RecommendationGroup
+from compass.views.attribution import EXPLORE_ATTRIBUTION
 
 BUCKET_TITLES: dict[Bucket, str] = {
     Bucket.CAREER_SIGNAL: "Career Signal",
@@ -58,4 +59,4 @@ def render_group(group: RecommendationGroup) -> str:
         for bucket in Bucket
     ]
 
-    return "\n\n".join([f"as of {group.as_of:%Y-%m-%d}", *sections])
+    return "\n\n".join([f"as of {group.as_of:%Y-%m-%d}", *sections, EXPLORE_ATTRIBUTION])

@@ -1,22 +1,22 @@
 import datetime
 
 from compass.adapters import GitHubClient, TopicCache, TopicRepoRecord
-from compass.application.topics import collect_topics
-from compass.domain import PersonalTopicsFile, ProjectTopicsFile
+from compass.application.topics import collect_profile
+from compass.domain import PersonalProfileFile, ProjectTopicsFile
 
 STALE_AFTER = datetime.timedelta(days=30)
 
 
 class FakeCache(TopicCache):
-    def __init__(self, personal: PersonalTopicsFile | None = None) -> None:
+    def __init__(self, personal: PersonalProfileFile | None = None) -> None:
         self.personal = personal
         self.projects: dict[str, ProjectTopicsFile] = {}
 
-    def load_personal(self) -> PersonalTopicsFile | None:
+    def load_personal(self) -> PersonalProfileFile | None:
         return self.personal
 
-    def save_personal(self, personal_topics: PersonalTopicsFile) -> None:
-        self.personal = personal_topics
+    def save_personal(self, profile: PersonalProfileFile) -> None:
+        self.personal = profile
 
     def load_projects(self, topic: str) -> ProjectTopicsFile | None:
         return self.projects.get(topic)
@@ -41,7 +41,7 @@ class FakeGitHub(GitHubClient):
                 description=None,
                 stars=1,
                 forks=0,
-                language=None,
+                language="Python",
                 topics=["python"],
                 updated_at=datetime.datetime.now(datetime.UTC).isoformat(),
             )
@@ -49,10 +49,14 @@ class FakeGitHub(GitHubClient):
 
 
 def test_fresh_personal_cache_is_served_without_a_fetch() -> None:
-    cached = PersonalTopicsFile(github_handle="octocat", topics_frequency=[("python", 3)])
+    cached = PersonalProfileFile(
+        github_handle="octocat",
+        topics_frequency=[("python", 3)],
+        languages_frequency=[("Python", 3)],
+    )
     github = FakeGitHub()
 
-    result = collect_topics(
+    result = collect_profile(
         github_handle="https://github.com/Octocat",
         github=github,
         cache=FakeCache(personal=cached),
@@ -65,16 +69,20 @@ def test_fresh_personal_cache_is_served_without_a_fetch() -> None:
 
 def test_stale_personal_cache_is_refetched_and_saved() -> None:
     old = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=31)
-    stale = PersonalTopicsFile(
-        github_handle="octocat", topics_frequency=[("python", 3)], update_date=old
+    stale = PersonalProfileFile(
+        github_handle="octocat",
+        topics_frequency=[("python", 3)],
+        languages_frequency=[("Python", 3)],
+        update_date=old,
     )
     cache = FakeCache(personal=stale)
     github = FakeGitHub()
 
-    result = collect_topics(
+    result = collect_profile(
         github_handle="octocat", github=github, cache=cache, stale_after=STALE_AFTER
     )
 
     assert github.calls == 1
     assert result.topics_frequency == [("python", 1)]
+    assert result.languages_frequency == [("Python", 1)]
     assert cache.personal is result

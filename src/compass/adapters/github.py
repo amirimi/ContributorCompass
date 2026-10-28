@@ -16,7 +16,7 @@ REPOS_PER_PAGE = 100
 SEARCH_RESULT_LIMIT = 1000
 HYDRATION_BATCH_SIZE = 50
 HYDRATION_MIN_BATCH_SIZE = 25
-HYDRATION_FAILURES = (GitHubException, pydantic.ValidationError)
+GRAPHQL_FAILURES = (GitHubException, pydantic.ValidationError)
 TRANSIENT_BACKOFF_SECONDS = (1, 4, 9)
 TRANSIENT_STATUS_CODES = frozenset({500, 502, 503, 504})
 
@@ -357,7 +357,7 @@ class GitHubClient:
     def hydrate_batch(self, node_ids: list[str]) -> dict[str, RepositoryEvidence]:
         try:
             return self.fetch_evidence_batch(node_ids)
-        except HYDRATION_FAILURES as exc:
+        except GRAPHQL_FAILURES as exc:
             if len(node_ids) <= HYDRATION_MIN_BATCH_SIZE:
                 logger.warning(
                     "Leaving %s repositories without evidence after a failed batch: %s",

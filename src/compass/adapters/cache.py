@@ -4,7 +4,13 @@ from pathlib import Path
 
 import pydantic
 
-from compass.domain import CacheFile, PersonalTopicsFile, ProjectTopicsFile
+from compass.domain import (
+    CacheFile,
+    PersonalProfileFile,
+    ProjectTopicsFile,
+    TagClusters,
+    VocabularySources,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -42,14 +48,39 @@ class TopicCache:
     def project_path(self, topic: str) -> Path:
         return self.project_dir / f"{topic}.json"
 
-    def load_personal(self) -> PersonalTopicsFile | None:
-        return load_cache_file(PersonalTopicsFile, self.personal_file)
+    def cached_topics(self) -> list[str]:
+        return sorted(path.stem for path in self.project_dir.glob("*.json"))
 
-    def save_personal(self, personal_topics: PersonalTopicsFile) -> None:
-        write_cache_file(personal_topics, self.personal_file)
+    def load_personal(self) -> PersonalProfileFile | None:
+        return load_cache_file(PersonalProfileFile, self.personal_file)
+
+    def save_personal(self, profile: PersonalProfileFile) -> None:
+        write_cache_file(profile, self.personal_file)
 
     def load_projects(self, topic: str) -> ProjectTopicsFile | None:
         return load_cache_file(ProjectTopicsFile, self.project_path(topic))
 
     def save_projects(self, topic: str, project_topics: ProjectTopicsFile) -> None:
         write_cache_file(project_topics, self.project_path(topic))
+
+
+class VocabularyCache:
+    def __init__(self, file_path: Path) -> None:
+        self.file_path = file_path
+
+    def load(self) -> VocabularySources | None:
+        return load_cache_file(VocabularySources, self.file_path)
+
+    def save(self, sources: VocabularySources) -> None:
+        write_cache_file(sources, self.file_path)
+
+
+class ClusterCache:
+    def __init__(self, file_path: Path) -> None:
+        self.file_path = file_path
+
+    def load(self) -> TagClusters | None:
+        return load_cache_file(TagClusters, self.file_path)
+
+    def save(self, clusters: TagClusters) -> None:
+        write_cache_file(clusters, self.file_path)

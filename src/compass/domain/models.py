@@ -194,9 +194,10 @@ class TopicCollection(DomainModel):
     pages_fetched: int
 
 
-class PersonalTopicsFile(CacheFile):
+class PersonalProfileFile(CacheFile):
     github_handle: str
     topics_frequency: list[tuple[str, int]]
+    languages_frequency: list[tuple[str, int]]
 
 
 class ProjectTopicsFile(CacheFile, TopicCollection):

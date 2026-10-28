@@ -45,26 +45,35 @@ def parse_timestamp(value: str | None) -> datetime.datetime | None:
     return datetime.datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def get_topics_frequencies(
-    github_handle: str,
-    github: GitHubClient,
-) -> list[tuple[str, int]]:
-    frequencies: defaultdict[str, int] = defaultdict(int)
-
-    now = datetime.datetime.now(datetime.UTC)
-    cutoff = now - datetime.timedelta(days=ACTIVITY_WINDOW_DAYS)
+def recent_user_repos(github_handle: str, github: GitHubClient) -> list[TopicRepoRecord]:
+    cutoff = datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=ACTIVITY_WINDOW_DAYS)
+    recent: list[TopicRepoRecord] = []
 
     for repo in github.user_repos(github_handle=github_handle):
-        updated_at = parse_timestamp(repo.get("updated_at"))
+        updated_at = parse_timestamp(repo["updated_at"])
 
-        if updated_at is None:
-            continue
+        if updated_at is not None and updated_at >= cutoff:
+            recent.append(repo)
 
-        if updated_at < cutoff:
-            continue
+    return recent
 
-        for topic in repo.get("topics", []):
+
+def topics_frequency(repos: list[TopicRepoRecord]) -> list[tuple[str, int]]:
+    frequencies: defaultdict[str, int] = defaultdict(int)
+
+    for repo in repos:
+        for topic in repo["topics"]:
             frequencies[topic] += 1
+
+    return rank_frequencies(frequencies)
+
+
+def languages_frequency(repos: list[TopicRepoRecord]) -> list[tuple[str, int]]:
+    frequencies: defaultdict[str, int] = defaultdict(int)
+
+    for repo in repos:
+        if repo["language"] is not None:
+            frequencies[repo["language"]] += 1
 
     return rank_frequencies(frequencies)
 

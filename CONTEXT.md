@@ -24,6 +24,43 @@ the primary semantic coordinate system but are not the only candidate source.
 A lazily derived relationship between Topics based on evidence such as co-occurrence, specificity,
 aliases, and semantic distance. No global ontology is required.
 
+### Tooling
+
+The means a contributor employs to reach a repository's goal. Languages come from byte
+share. Frameworks, platforms, interfaces such as `cli`, shapes such as `library` or
+`plugin`, and architectures such as `onion-architecture` come from tags that the lexicon
+names. Tooling is enumerated and compared by exact key.
+
+### Meaning
+
+The end a repository works toward. Any tag that is neither tooling nor meta is meaning,
+so meaning is the open remainder of the vocabulary and is compared by similarity. A
+short lexicon list places host terms such as `neovim`, `browser` and `llm` on both axes,
+because one repository uses them while another is about them.
+
+### Synonym Group
+
+Tags whose embeddings sit within cosine distance 0.2 of each other, such as `llm`, `llms`
+and `local-llm`. A synonym of a history term counts as known meaning. An uncurated tag in
+a group with a tooling term becomes tooling.
+
+### Family
+
+Tags within cosine distance 0.4, such as `emulator`, `nes` and `retroarch`. A family match
+with a declared term counts as declared and with a history term only as adjacent.
+
+### Vocabulary
+
+The merged map from raw tags to tooling and meaning terms. It merges github/explore
+curated topics, GitHub Linguist languages and the hand-edited lexicon, and the lexicon
+wins every conflict.
+
+### Crossing
+
+How far a repository sits from a developer on each axis. Tooling relations are avoided,
+preferred, known, open and unfamiliar. Meaning relations are declared, known, adjacent and
+new. A Crossing states facts, and the Taste Policy decides what each one costs.
+
 ### Candidate Repository
 
 A repository admitted to the temporary evaluation funnel through explicit Discovery Evidence. Most
@@ -172,3 +209,44 @@ body.** A timed-out query sometimes comes back as a 200 with no body instead of 
 `pydantic.ValidationError` on the empty body and stops. The wrapper applies the same
 backoff to that case. One such response on a `javascript` search page ended a full
 sweep after 10 topics before the wrapper existed.
+
+## Vocabulary constraints
+
+**Linguist outranks explore for languages, except for tags the lexicon reclaims.**
+github/explore curates languages such as `python` and `rust` as topics, so explore alone
+would put every language on the meaning axis. Linguist fixes that, but the two sources
+claim 151 tags in common, and some Linguist aliases are wrong for topics. `nvim` is a
+Linguist alias of Vim script, `django` an alias of Jinja, and `click` a router language.
+The lexicon's `reclaim_from_linguist` list keeps such tags as meaning, and its framework
+table claims `django` as tooling before Linguist sees it.
+
+**Tooling reads byte share, and the avoidance veto reads primary language.** neovim
+reports Vim Script as its primary language while its bytes split Vim Script 39%, Lua 33%
+and C 27%, so every language at 10% or more counts. The veto against an avoided language
+checks only the primary language. harbor is Go 54% with TypeScript 21% for its web UI,
+and a byte-share veto would exclude it.
+
+**Explore is read through GraphQL blob batches.** The repository is 73.6 MB, mostly
+logos, and holds 1,278 topic pages. One tree query and 13 batches of 100 aliased
+`object(expression:)` lookups cost 1 point each. REST would spend 1,278 core requests,
+and a tarball would download the logos on every rebuild. A full rebuild took 2 minutes
+45 seconds.
+
+**Only the network sources and the clusters are cached.** `vocabulary.json` holds
+explore and Linguist terms, and `clusters.json` holds synonym groups and families. The
+lexicon is applied each time the vocabulary is built in memory, so a lexicon edit takes
+effect without a network rebuild. Tooling inherited through a synonym group follows a
+lexicon edit at the next `compass clusters` run.
+
+**Clusters come from tag names and their neighbours, never from prose.** Each tag name is
+embedded with potion-base-8M and mixed with the embeddings of the meaning tags it shares
+repositories with. Descriptions and READMEs are left out because their non-technical
+words would pull unrelated repositories together. Tooling-only tags such as `javascript`
+or `cli` add no context, because they sit on thousands of repositories and would drown
+the meaning signal. Only `compass clusters` loads the model, so recommendation stays free
+of model inference.
+
+**Uncurated tags stay meaning.** Curated topics cover 39.8% of tag occurrences. Discovery
+topics such as `editor`, `browser` and `utilities` are uncurated, and dropping uncurated
+tags would make every project found through them look unrelated to the developer who
+chose them.

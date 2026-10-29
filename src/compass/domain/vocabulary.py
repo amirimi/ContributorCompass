@@ -9,10 +9,57 @@ from compass.domain.clusters import TagClusters
 from compass.domain.models import CacheFile, DomainModel
 
 TAG_SEPARATORS = re.compile(r"[\s_]+")
+PLURAL_MIN_LENGTH = 5
+SEGMENT_STEM_LENGTH = 3
+SPELLING_PREFIX = 5
 
 
 def normalize_tag(raw: str) -> str:
     return TAG_SEPARATORS.sub("-", raw.strip().lower())
+
+
+def singular_segments(tag: str) -> list[str]:
+    return [
+        segment[:-1] if len(segment) > SEGMENT_STEM_LENGTH and segment.endswith("s") else segment
+        for segment in normalize_tag(tag).split("-")
+    ]
+
+
+def unshared_segments(
+    first: list[str],
+    second: list[str],
+) -> tuple[list[str], list[str]] | None:
+    shared = 0
+
+    while first and second and first[0] == second[0]:
+        first, second, shared = first[1:], second[1:], shared + 1
+
+    while first and second and first[-1] == second[-1]:
+        first, second, shared = first[:-1], second[:-1], shared + 1
+
+    return (first, second) if shared else None
+
+
+def spelling_variants(first: str, second: str) -> bool:
+    return (
+        first.startswith(second)
+        or second.startswith(first)
+        or first[:SPELLING_PREFIX] == second[:SPELLING_PREFIX]
+    )
+
+
+def sibling_compounds(first: str, second: str) -> bool:
+    left, right = singular_segments(first), singular_segments(second)
+
+    if len(left) < 2 or len(right) < 2:
+        return False
+
+    remainders = unshared_segments(left, right)
+
+    if remainders is None or not all(remainders):
+        return False
+
+    return not spelling_variants("".join(remainders[0]), "".join(remainders[1]))
 
 
 class Axis(StrEnum):
@@ -94,7 +141,18 @@ class Vocabulary:
         if token in self.inherited:
             return Resolution(token=token, terms=self.inherited[token], inherited=True)
 
-        return Resolution(token=token, terms=self.claims.get(token, ()))
+        return Resolution(token=token, terms=self.claims.get(token) or self.singular_claim(token))
+
+    def singular_claim(self, token: str) -> tuple[Term, ...]:
+        if len(token) < PLURAL_MIN_LENGTH or not token.endswith("s"):
+            return ()
+
+        terms = self.claims.get(token[:-1], ())
+
+        if any(term.source is TermSource.LINGUIST for term in terms):
+            return ()
+
+        return terms
 
     def neighbours(self, meaning: str) -> frozenset[str]:
         return self.adjacency.get(meaning, frozenset())
@@ -198,21 +256,22 @@ def place_on_both_axes(
     return placed
 
 
-def undirected_adjacency(
+def outward_links(
     claims: dict[str, tuple[Term, ...]],
     explore: list[Term],
 ) -> dict[str, frozenset[str]]:
-    adjacency: defaultdict[str, set[str]] = defaultdict(set)
+    links: defaultdict[str, set[str]] = defaultdict(set)
 
     for term in explore:
         for source in meaning_names(claims, normalize_tag(term.name)):
-            for related in term.related:
-                for target in meaning_names(claims, normalize_tag(related)):
-                    if target != source:
-                        adjacency[source].add(target)
-                        adjacency[target].add(source)
+            links[source].update(
+                target
+                for related in term.related
+                for target in meaning_names(claims, normalize_tag(related))
+                if target != source
+            )
 
-    return {name: frozenset(neighbours) for name, neighbours in adjacency.items()}
+    return {name: frozenset(targets) for name, targets in links.items() if targets}
 
 
 def inherited_claims(
@@ -252,7 +311,7 @@ def build_vocabulary(
     return Vocabulary(
         claims=claims,
         meta=meta,
-        adjacency=undirected_adjacency(claims, sources.explore),
+        adjacency=outward_links(claims, sources.explore),
         inherited=inherited_claims(claims, meta, clusters.tooling_parents) if clusters else {},
         synonyms=clusters.synonyms if clusters else {},
         families=clusters.families if clusters else {},

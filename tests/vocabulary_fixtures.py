@@ -63,6 +63,8 @@ SOURCES = VocabularySources(
         linguist("Lua"),
         linguist("C"),
         linguist("Kotlin"),
+        linguist("Scheme"),
+        linguist("D", ["dlang"]),
         linguist("Vim script", ["vim", "viml", "nvim", "vimscript"]),
         linguist("Jinja", ["django", "jinja2"]),
     ],

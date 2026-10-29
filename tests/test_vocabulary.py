@@ -3,6 +3,7 @@ import pytest
 from compass.adapters.explore import parse_topic_page
 from compass.adapters.linguist import parse_languages
 from compass.domain import Axis, TermSource
+from compass.domain.vocabulary import sibling_compounds
 from tests.vocabulary_fixtures import make_clusters, make_vocabulary
 
 NEOVIM_PAGE = """---
@@ -148,11 +149,50 @@ def test_cluster_lookups_fall_back_to_the_tag_itself() -> None:
     assert not vocabulary.clustered("emulator")
 
 
-def test_related_topics_are_adjacent_in_both_directions() -> None:
+def test_related_topics_link_outward_from_their_own_page_only() -> None:
     vocabulary = make_vocabulary()
 
     assert "vim" in vocabulary.neighbours("neovim")
-    assert "neovim" in vocabulary.neighbours("vim")
+    assert "neovim" not in vocabulary.neighbours("vim")
+
+
+def test_plural_tag_resolves_to_its_singular_term() -> None:
+    assert names_on("large-language-models", Axis.MEANING) == ["llm"]
+
+
+@pytest.mark.parametrize("raw", ["ds", "schemes", "rusts"])
+def test_short_plurals_and_language_singulars_never_fold(raw: str) -> None:
+    assert make_vocabulary().resolve(raw).uncurated
+
+
+@pytest.mark.parametrize(
+    ("first", "second"),
+    [
+        ("image-classification", "text-classification"),
+        ("data-mining", "data-science"),
+        ("vpn-client", "vpn-server"),
+    ],
+)
+def test_compounds_differing_beside_a_shared_segment_are_siblings(first: str, second: str) -> None:
+    assert sibling_compounds(first, second)
+    assert sibling_compounds(second, first)
+
+
+@pytest.mark.parametrize(
+    ("first", "second"),
+    [
+        ("data-visualisation", "data-visualization"),
+        ("recommender-system", "recommendation-system"),
+        ("threat-intelligence", "cyber-threat-intelligence"),
+        ("github", "github-api"),
+        ("algorithm-competitions", "competitive-programming"),
+        ("neural-networks", "neural-network"),
+    ],
+)
+def test_spelling_variants_and_unrelated_compounds_are_not_siblings(
+    first: str, second: str
+) -> None:
+    assert not sibling_compounds(first, second)
 
 
 def test_explore_front_matter_becomes_a_meaning_term() -> None:

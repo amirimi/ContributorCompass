@@ -11,6 +11,7 @@ from compass.domain import (
     TagClusters,
     VocabularySources,
 )
+from compass.domain.contributions import ContributorHistory, RepositoryStore, ShiftSample
 
 logger = logging.getLogger(__name__)
 
@@ -84,3 +85,44 @@ class ClusterCache:
 
     def save(self, clusters: TagClusters) -> None:
         write_cache_file(clusters, self.file_path)
+
+
+class ShiftCache:
+    def __init__(self, directory: Path) -> None:
+        self.directory = directory
+        self.sample_file = directory / "sample.json"
+        self.repositories_file = directory / "repositories.json"
+        self.contributor_dir = directory / "contributors"
+        self.clusters = ClusterCache(file_path=directory / "clusters.json")
+
+    def contributor_path(self, login: str) -> Path:
+        return self.contributor_dir / f"{login.lower()}.json"
+
+    def load_sample(self) -> ShiftSample | None:
+        return load_cache_file(ShiftSample, self.sample_file)
+
+    def save_sample(self, sample: ShiftSample) -> None:
+        write_cache_file(sample, self.sample_file)
+
+    def load_repositories(self) -> RepositoryStore:
+        return load_cache_file(RepositoryStore, self.repositories_file) or RepositoryStore()
+
+    def save_repositories(self, store: RepositoryStore) -> None:
+        write_cache_file(store, self.repositories_file)
+
+    def has_contributor(self, login: str) -> bool:
+        return self.contributor_path(login).exists()
+
+    def load_contributor(self, login: str) -> ContributorHistory | None:
+        return load_cache_file(ContributorHistory, self.contributor_path(login))
+
+    def save_contributor(self, history: ContributorHistory) -> None:
+        write_cache_file(history, self.contributor_path(history.login))
+
+    def load_contributors(self) -> list[ContributorHistory]:
+        histories = (
+            load_cache_file(ContributorHistory, path)
+            for path in sorted(self.contributor_dir.glob("*.json"))
+        )
+
+        return [history for history in histories if history is not None]

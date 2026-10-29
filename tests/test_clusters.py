@@ -9,6 +9,7 @@ from compass.adapters import ClusterCache, load_lexicon
 from compass.adapters.clustering import cut_tree, mix_context
 from compass.application import clusters as clustering
 from compass.application.clusters import (
+    MIN_OCCURRENCES,
     EmbeddingModel,
     TagBudgetExceeded,
     build_clusters,
@@ -137,7 +138,7 @@ def test_tag_budget_stops_the_build(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(clustering, "MAX_TAGS", 1)
 
     with pytest.raises(TagBudgetExceeded):
-        select_tags([["a", "b"], ["a", "b"]], set(), make_vocabulary())
+        select_tags([["a", "b"], ["a", "b"]], set(), make_vocabulary(), MIN_OCCURRENCES)
 
 
 def test_refresh_saves_the_file_and_reports_counts(tmp_path: Path) -> None:

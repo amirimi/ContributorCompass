@@ -1,4 +1,5 @@
-from .cache import ClusterCache, TopicCache, VocabularyCache
+from .cache import ClusterCache, ShiftCache, TopicCache, VocabularyCache
+from .contributions import ContributionSource
 from .explore import ExploreSource
 from .github import GitHubClient, RepositoryEvidence, TopicRepoRecord
 from .helper import format_github_handle
@@ -17,6 +18,7 @@ from .settings import (
     PROJECT_TOPICS_DIR,
     PROJECT_TOPICS_REFRESH_AFTER,
     PROJECT_TOPICS_STALE_AFTER,
+    SHIFT_DIR,
     VOCABULARY_FILE,
     VOCABULARY_STALE_AFTER,
     resolve_github_token,
@@ -35,13 +37,16 @@ __all__ = [
     "PROJECT_TOPICS_DIR",
     "PROJECT_TOPICS_REFRESH_AFTER",
     "PROJECT_TOPICS_STALE_AFTER",
+    "SHIFT_DIR",
     "VOCABULARY_FILE",
     "VOCABULARY_STALE_AFTER",
     "ClusterCache",
+    "ContributionSource",
     "ExploreSource",
     "GitHubClient",
     "LinguistSource",
     "RepositoryEvidence",
+    "ShiftCache",
     "TopicCache",
     "TopicRepoRecord",
     "VocabularyCache",

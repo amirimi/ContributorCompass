@@ -89,9 +89,14 @@ def anchor_tags(
     return {normalize_tag(name) for name in names}
 
 
-def select_tags(tag_lists: list[list[str]], anchors: set[str], vocabulary: Vocabulary) -> list[str]:
+def select_tags(
+    tag_lists: list[list[str]],
+    anchors: set[str],
+    vocabulary: Vocabulary,
+    min_occurrences: int,
+) -> list[str]:
     counts = Counter(token for tokens in tag_lists for token in tokens)
-    frequent = {token for token, count in counts.items() if count >= MIN_OCCURRENCES}
+    frequent = {token for token, count in counts.items() if count >= min_occurrences}
     selected = sorted(token for token in frequent | anchors if token not in vocabulary.meta)
 
     if len(selected) > MAX_TAGS:
@@ -129,11 +134,15 @@ def build_clusters(
     profile: PersonalProfileFile | None,
     preferences: Preferences,
     model: EmbeddingModel,
+    min_occurrences: int = MIN_OCCURRENCES,
 ) -> TagClusters:
     vocabulary = build_vocabulary(sources, lexicon)
     tag_lists = project_tags(projects, vocabulary)
     selected = select_tags(
-        tag_lists, anchor_tags(sources, lexicon, profile, preferences), vocabulary
+        tag_lists,
+        anchor_tags(sources, lexicon, profile, preferences),
+        vocabulary,
+        min_occurrences,
     )
     tags, vectors = embed_tags(selected, tag_lists, model.embedder, vocabulary)
     synonym_ids, family_ids = cut_tree(vectors, [SYNONYM_CUT, FAMILY_CUT])
@@ -155,6 +164,27 @@ def build_clusters(
             is_claimed=lambda tag: tag in claimed,
         ),
     )
+
+
+def build_clusters_within_budget(
+    projects: list[TopicProject],
+    sources: VocabularySources,
+    lexicon: Lexicon,
+    model: EmbeddingModel,
+) -> tuple[TagClusters, int]:
+    min_occurrences = MIN_OCCURRENCES
+
+    while True:
+        try:
+            clusters = build_clusters(
+                projects, sources, lexicon, None, Preferences(), model, min_occurrences
+            )
+        except TagBudgetExceeded as exc:
+            logger.info("Raising min_occurrences above %s because %s", min_occurrences, exc)
+            min_occurrences += 1
+            continue
+
+        return clusters, min_occurrences
 
 
 def summarize_clusters(clusters: TagClusters) -> ClusterReport:

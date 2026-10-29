@@ -1,108 +1,488 @@
 {
-    "creation_date": "2026-10-28T09:06:21.990985Z",
-    "update_date": "2026-10-28T09:06:21.990990Z",
-    "github_handle": "amirkarimi",
+    "creation_date": "2026-10-29T17:47:01.156813Z",
+    "update_date": "2026-10-29T17:47:01.156820Z",
+    "github_handle": "amirimi",
     "topics_frequency": [
         [
             "python",
             5
         ],
         [
-            "editor",
+            "llm",
+            3
+        ],
+        [
+            "java",
             2
         ],
         [
-            "utilities",
+            "go",
             2
         ],
         [
-            "personal-website",
+            "golang",
+            2
+        ],
+        [
+            "developer-tools",
+            2
+        ],
+        [
+            "webcrawler",
             1
         ],
         [
-            "static-site-generator",
+            "webcrawling",
             1
         ],
         [
-            "scalajs",
+            "python3",
             1
         ],
         [
-            "scala",
+            "python-3",
             1
         ],
         [
-            "wysiwyg",
+            "swing",
             1
         ],
         [
-            "javascript",
+            "swing-gui",
             1
         ],
         [
-            "e-ink",
+            "tic-tac-toe",
             1
         ],
         [
-            "raspberry-pi",
+            "tictactoe-game",
             1
         ],
         [
-            "diagram-editor",
+            "tictactoe",
             1
         ],
         [
-            "diagrams",
+            "javafx",
             1
         ],
         [
-            "terminal",
+            "javafx-application",
             1
         ],
         [
-            "browser",
+            "java-8",
             1
         ],
         [
-            "github-actions",
+            "morris",
             1
         ],
         [
-            "neovim",
+            "monopoly",
             1
         ],
         [
-            "nvim",
+            "monopoly-game",
             1
         ],
         [
-            "neovim-plugin",
+            "monopoly-simulator",
             1
         ],
         [
-            "bash",
+            "cpp",
             1
         ],
         [
-            "cli",
+            "cplusplus",
             1
         ],
         [
-            "vim-like",
+            "competitive-programming",
+            1
+        ],
+        [
+            "competitive-programming-contests",
+            1
+        ],
+        [
+            "competitiveprogramming",
+            1
+        ],
+        [
+            "codeforces",
+            1
+        ],
+        [
+            "codeforces-solutions",
+            1
+        ],
+        [
+            "kattis",
+            1
+        ],
+        [
+            "kattis-solutions",
+            1
+        ],
+        [
+            "uva",
+            1
+        ],
+        [
+            "uva-solutions",
+            1
+        ],
+        [
+            "uva-online-judge",
+            1
+        ],
+        [
+            "uva-problem-solving",
+            1
+        ],
+        [
+            "hacktoberfest",
+            1
+        ],
+        [
+            "leetcode",
+            1
+        ],
+        [
+            "quera",
+            1
+        ],
+        [
+            "data-science",
+            1
+        ],
+        [
+            "data-visualization",
+            1
+        ],
+        [
+            "huggingface",
+            1
+        ],
+        [
+            "huggingface-datasets",
+            1
+        ],
+        [
+            "text-classification",
+            1
+        ],
+        [
+            "text-generation",
+            1
+        ],
+        [
+            "microservice",
+            1
+        ],
+        [
+            "rate-limiter",
+            1
+        ],
+        [
+            "rate-limiting",
+            1
+        ],
+        [
+            "ratelimit",
+            1
+        ],
+        [
+            "sliding-window",
+            1
+        ],
+        [
+            "chatgpt",
+            1
+        ],
+        [
+            "guardian",
+            1
+        ],
+        [
+            "guardrail",
+            1
+        ],
+        [
+            "jailbreak",
+            1
+        ],
+        [
+            "prompt",
+            1
+        ],
+        [
+            "prompt-engineering",
+            1
+        ],
+        [
+            "prompt-injection",
+            1
+        ],
+        [
+            "prompt-security",
+            1
+        ],
+        [
+            "microservices",
+            1
+        ],
+        [
+            "micro-kernel",
+            1
+        ],
+        [
+            "kernel",
+            1
+        ],
+        [
+            "ai-infrastructure",
+            1
+        ],
+        [
+            "guardrails",
+            1
+        ],
+        [
+            "microkernel",
+            1
+        ],
+        [
+            "ai",
+            1
+        ],
+        [
+            "matcher",
+            1
+        ],
+        [
+            "matching-engine",
+            1
+        ],
+        [
+            "people-match",
+            1
+        ],
+        [
+            "graph",
+            1
+        ],
+        [
+            "matchmaking",
+            1
+        ],
+        [
+            "nlp",
+            1
+        ],
+        [
+            "recommender-system",
+            1
+        ],
+        [
+            "open-source",
+            1
+        ],
+        [
+            "contributor-tools",
+            1
+        ],
+        [
+            "github-api",
+            1
+        ],
+        [
+            "good-first-issue",
+            1
+        ],
+        [
+            "open-source-contributions",
+            1
+        ],
+        [
+            "project-monitoring",
+            1
+        ],
+        [
+            "automation",
+            1
+        ],
+        [
+            "developer-tools-ai-agent",
+            1
+        ],
+        [
+            "open-source-contribution",
+            1
+        ],
+        [
+            "oss",
+            1
+        ],
+        [
+            "ai-gateway",
+            1
+        ],
+        [
+            "budget-control",
+            1
+        ],
+        [
+            "cost-optimization",
+            1
+        ],
+        [
+            "finops",
+            1
+        ],
+        [
+            "graceful-degradation",
+            1
+        ],
+        [
+            "litellm",
+            1
+        ],
+        [
+            "llm-gateway",
+            1
+        ],
+        [
+            "llm-proxy",
+            1
+        ],
+        [
+            "llmops",
+            1
+        ],
+        [
+            "model-routing",
+            1
+        ],
+        [
+            "brownout",
+            1
+        ],
+        [
+            "brownout-prevention",
+            1
+        ],
+        [
+            "agent-skills",
+            1
+        ],
+        [
+            "ai-agents",
+            1
+        ],
+        [
+            "anthropic",
+            1
+        ],
+        [
+            "claude",
+            1
+        ],
+        [
+            "claude-code",
+            1
+        ],
+        [
+            "claude-code-plugin",
+            1
+        ],
+        [
+            "claude-skills",
+            1
+        ],
+        [
+            "code-explanation",
+            1
+        ],
+        [
+            "codex",
+            1
+        ],
+        [
+            "opencode",
+            1
+        ],
+        [
+            "plain-english",
+            1
+        ],
+        [
+            "readability",
+            1
+        ],
+        [
+            "skill-md",
+            1
+        ],
+        [
+            "technical-writing",
+            1
+        ],
+        [
+            "cursor",
             1
         ]
     ],
     "languages_frequency": [
         [
             "Python",
-            7
+            17
         ],
         [
-            "JavaScript",
+            "Java",
+            6
+        ],
+        [
+            "Kotlin",
+            4
+        ],
+        [
+            "Go",
+            3
+        ],
+        [
+            "CSS",
             2
         ],
         [
-            "Ruby",
+            "C++",
+            1
+        ],
+        [
+            "ANTLR",
+            1
+        ],
+        [
+            "R",
+            1
+        ],
+        [
+            "C",
+            1
+        ],
+        [
+            "Jupyter Notebook",
+            1
+        ],
+        [
+            "PHP",
+            1
+        ],
+        [
+            "TypeScript",
             1
         ],
         [
@@ -110,23 +490,7 @@
             1
         ],
         [
-            "Scala",
-            1
-        ],
-        [
-            "Xonsh",
-            1
-        ],
-        [
-            "Rust",
-            1
-        ],
-        [
             "Shell",
-            1
-        ],
-        [
-            "Lua",
             1
         ]
     ]

@@ -41,8 +41,10 @@ because one repository uses them while another is about them.
 ### Synonym Group
 
 Tags whose embeddings sit within cosine distance 0.2 of each other, such as `llm`, `llms`
-and `local-llm`. A synonym of a history term counts as known meaning. An uncurated tag in
-a group with a tooling term becomes tooling.
+and `local-llm`. A synonym of a history term counts as known meaning, except for a sibling
+compound such as `text-classification` beside `image-classification`. Sibling compounds
+share a first or last segment and differ by more than spelling in the rest. An uncurated
+tag in a group with a tooling term becomes tooling.
 
 ### Family
 
@@ -53,13 +55,16 @@ with a declared term counts as declared and with a history term only as adjacent
 
 The merged map from raw tags to tooling and meaning terms. It merges github/explore
 curated topics, GitHub Linguist languages and the hand-edited lexicon, and the lexicon
-wins every conflict.
+wins every conflict. An uncurated tag of at least five characters that ends in `s`
+resolves to the terms claiming its singular, unless a Linguist language claims it.
 
 ### Crossing
 
 How far a repository sits from a developer on each axis. Tooling relations are avoided,
 preferred, known, open and unfamiliar. Meaning relations are declared, known, adjacent and
-new. A Crossing states facts, and the Taste Policy decides what each one costs.
+new. A curated related link makes a project term adjacent only when the term's own explore
+page lists the history term. A Crossing states facts, and the Taste Policy decides what
+each one costs.
 
 ### Candidate Repository
 

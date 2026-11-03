@@ -31,11 +31,11 @@
                 "vim-like",
                 "vifm"
             ],
-            "stars": 3281,
-            "forks": 147,
+            "stars": 3282,
+            "forks": 148,
             "created_at": "2009-01-21T23:09:53Z",
-            "updated_at": "2026-10-28T11:38:20Z",
-            "pushed_at": "2026-10-25T10:21:55Z",
+            "updated_at": "2026-10-30T22:58:43Z",
+            "pushed_at": "2026-11-02T23:29:32Z",
             "is_archived": false,
             "latest_release_at": "2026-10-20T17:55:48Z",
             "open_pr_count": 2,
@@ -54,7 +54,7 @@
             "median_pr_merge_days": null,
             "median_pr_first_response_days": null,
             "has_issues_enabled": true,
-            "open_issues_count": 143,
+            "open_issues_count": 144,
             "open_good_first_issue_count": 0,
             "has_contributing_guide": false,
             "has_pr_template": null,
@@ -86,10 +86,10 @@
                 "c",
                 "vim-like"
             ],
-            "stars": 2318,
+            "stars": 2322,
             "forks": 256,
             "created_at": "2010-08-08T10:09:04Z",
-            "updated_at": "2026-10-26T16:55:07Z",
+            "updated_at": "2026-10-31T00:26:21Z",
             "pushed_at": "2026-06-01T07:29:38Z",
             "is_archived": false,
             "latest_release_at": "2025-02-14T12:28:55Z",
@@ -119,6 +119,6 @@
     ],
     "stop_reason": "star_floor",
     "pages_fetched": 1,
-    "creation_date": "2026-10-29T10:03:09.979000Z",
-    "update_date": "2026-10-29T10:03:09.979006Z"
+    "creation_date": "2026-11-03T11:12:53.667114Z",
+    "update_date": "2026-11-03T11:12:53.667120Z"
 }

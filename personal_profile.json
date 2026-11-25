@@ -1,11 +1,11 @@
 {
-    "creation_date": "2026-10-29T17:47:01.156813Z",
-    "update_date": "2026-10-29T17:47:01.156820Z",
+    "creation_date": "2026-11-25T12:49:41.256435Z",
+    "update_date": "2026-11-25T12:49:41.256439Z",
     "github_handle": "amirimi",
     "topics_frequency": [
         [
             "python",
-            5
+            4
         ],
         [
             "llm",
@@ -21,6 +21,10 @@
         ],
         [
             "golang",
+            2
+        ],
+        [
+            "recommender-system",
             2
         ],
         [
@@ -156,30 +160,6 @@
             1
         ],
         [
-            "data-science",
-            1
-        ],
-        [
-            "data-visualization",
-            1
-        ],
-        [
-            "huggingface",
-            1
-        ],
-        [
-            "huggingface-datasets",
-            1
-        ],
-        [
-            "text-classification",
-            1
-        ],
-        [
-            "text-generation",
-            1
-        ],
-        [
             "microservice",
             1
         ],
@@ -284,15 +264,7 @@
             1
         ],
         [
-            "recommender-system",
-            1
-        ],
-        [
             "open-source",
-            1
-        ],
-        [
-            "contributor-tools",
             1
         ],
         [
@@ -308,23 +280,19 @@
             1
         ],
         [
-            "project-monitoring",
-            1
-        ],
-        [
-            "automation",
-            1
-        ],
-        [
-            "developer-tools-ai-agent",
-            1
-        ],
-        [
-            "open-source-contribution",
-            1
-        ],
-        [
             "oss",
+            1
+        ],
+        [
+            "beginner-friendly",
+            1
+        ],
+        [
+            "first-timers-only",
+            1
+        ],
+        [
+            "good-first-issues",
             1
         ],
         [
@@ -372,7 +340,23 @@
             1
         ],
         [
-            "brownout-prevention",
+            "ai-governance",
+            1
+        ],
+        [
+            "cost-control",
+            1
+        ],
+        [
+            "litellm-proxy",
+            1
+        ],
+        [
+            "llm-cost",
+            1
+        ],
+        [
+            "spend-management",
             1
         ],
         [
@@ -404,23 +388,11 @@
             1
         ],
         [
-            "code-explanation",
-            1
-        ],
-        [
             "codex",
             1
         ],
         [
             "opencode",
-            1
-        ],
-        [
-            "plain-english",
-            1
-        ],
-        [
-            "readability",
             1
         ],
         [
@@ -434,12 +406,40 @@
         [
             "cursor",
             1
+        ],
+        [
+            "agentic-coding",
+            1
+        ],
+        [
+            "claude-code-plugins",
+            1
+        ],
+        [
+            "claude-code-skills",
+            1
+        ],
+        [
+            "claude-plugin",
+            1
+        ],
+        [
+            "code-review",
+            1
+        ],
+        [
+            "spec-driven-development",
+            1
+        ],
+        [
+            "summarization",
+            1
         ]
     ],
     "languages_frequency": [
         [
             "Python",
-            17
+            8
         ],
         [
             "Java",
@@ -447,14 +447,10 @@
         ],
         [
             "Kotlin",
-            4
+            2
         ],
         [
             "Go",
-            3
-        ],
-        [
-            "CSS",
             2
         ],
         [
@@ -474,19 +470,7 @@
             1
         ],
         [
-            "Jupyter Notebook",
-            1
-        ],
-        [
-            "PHP",
-            1
-        ],
-        [
             "TypeScript",
-            1
-        ],
-        [
-            "HTML",
             1
         ],
         [

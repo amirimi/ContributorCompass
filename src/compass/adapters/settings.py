@@ -10,6 +10,7 @@ VOCABULARY_FILE = Path("vocabulary.json")
 PREFERENCES_FILE = Path("preferences.toml")
 CLUSTERS_FILE = Path("clusters.json")
 MODEL_CACHE_DIR = Path(".cache/models")
+SHIFT_DIR = Path(".cache/shift")
 
 EMBEDDING_MODEL = "minishlab/potion-base-8M"
 EMBEDDING_REVISION = "bf8b056651a2c21b8d2565580b8569da283cab23"

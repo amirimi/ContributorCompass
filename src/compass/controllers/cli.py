@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Annotated
 
@@ -16,12 +17,15 @@ from compass.adapters import (
     PROJECT_TOPICS_DIR,
     PROJECT_TOPICS_REFRESH_AFTER,
     PROJECT_TOPICS_STALE_AFTER,
+    SHIFT_DIR,
     VOCABULARY_FILE,
     VOCABULARY_STALE_AFTER,
     ClusterCache,
+    ContributionSource,
     ExploreSource,
     GitHubClient,
     LinguistSource,
+    ShiftCache,
     TopicCache,
     VocabularyCache,
     load_lexicon,
@@ -29,6 +33,8 @@ from compass.adapters import (
     resolve_github_token,
 )
 from compass.application.identity import find_project, inspect_repository
+from compass.application.shift_data import fetch_sample, sample_contributors
+from compass.application.shift_report import ENTRY_CAP, ReportVariant, own_entries, run_report
 from compass.application.topics import collect_profile, collect_topic_pages
 from compass.application.vocabulary import (
     cached_projects,
@@ -38,11 +44,15 @@ from compass.application.vocabulary import (
 )
 from compass.domain import TagClusters, VocabularySources, build_vocabulary, describe_contributor
 from compass.views.identity import render_inspection, render_vocabulary_report
+from compass.views.shift import render_fetch_summary, render_own_entries, render_report
 
 app = typer.Typer()
+shift_app = typer.Typer(help="Test whether tooling and meaning shifts get unequal feedback.")
+app.add_typer(shift_app, name="shift")
 cache = TopicCache(personal_file=PERSONAL_PROFILE_FILE, project_dir=PROJECT_TOPICS_DIR)
 vocabulary_cache = VocabularyCache(file_path=VOCABULARY_FILE)
 cluster_cache = ClusterCache(file_path=CLUSTERS_FILE)
+shift_cache = ShiftCache(directory=SHIFT_DIR)
 
 
 def require_github_token() -> str:
@@ -197,6 +207,123 @@ def identify(
     )
 
     typer.echo(render_inspection(inspection))
+
+
+@shift_app.command("sample")
+def shift_sample(
+    size: Annotated[int, typer.Option()] = 50,
+    seed: Annotated[int, typer.Option()] = 20261029,
+    include: Annotated[list[str] | None, typer.Option()] = None,
+) -> None:
+    with GitHubClient(token=require_github_token()) as github:
+        sample = sample_contributors(
+            projects=cached_projects(cache),
+            source=ContributionSource(github),
+            cache=shift_cache,
+            size=size,
+            seed=seed,
+            include=include or [],
+        )
+
+    typer.echo(f"Sample holds {len(sample.logins)} contributors")
+
+
+@shift_app.command("fetch")
+def shift_fetch(
+    limit: Annotated[int | None, typer.Option()] = None,
+    hours: Annotated[float | None, typer.Option()] = None,
+    workers: Annotated[int, typer.Option()] = 6,
+) -> None:
+    deadline = (
+        datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=hours)
+        if hours is not None
+        else None
+    )
+
+    with GitHubClient(token=require_github_token()) as github:
+        source = ContributionSource(github)
+        before, _ = source.rate_limit()
+        summary = fetch_sample(source, shift_cache, limit, deadline, workers)
+        after, _ = source.rate_limit()
+
+    points = before - after if after <= before else None
+    typer.echo(render_fetch_summary(summary, points))
+
+
+@shift_app.command("clusters")
+def shift_clusters() -> None:
+    try:
+        from compass.adapters.embedding import TagEmbedder, download_model
+        from compass.application.clusters import EmbeddingModel, build_clusters_within_budget
+    except ImportError:
+        typer.echo("Clustering needs the clusters extra, run `uv sync --extra clusters`", err=True)
+        raise typer.Exit(code=1) from None
+
+    model_dir = download_model(
+        EMBEDDING_MODEL, EMBEDDING_REVISION, MODEL_CACHE_DIR, MODEL_DOWNLOAD_TIMEOUT
+    )
+    histories = shift_cache.load_contributors()
+    store = shift_cache.load_repositories()
+    repositories = {
+        repository.url: repository.as_topic_project()
+        for repository in [
+            *store.repositories.values(),
+            *(owned for history in histories for owned in history.owned),
+        ]
+    }
+    projects = {project.url: project for project in cached_projects(cache)} | repositories
+    clusters, min_occurrences = build_clusters_within_budget(
+        projects=list(projects.values()),
+        sources=require_fresh_sources(),
+        lexicon=load_lexicon(),
+        model=EmbeddingModel(
+            name=EMBEDDING_MODEL,
+            revision=EMBEDDING_REVISION,
+            embedder=TagEmbedder(model_dir),
+        ),
+    )
+    shift_cache.clusters.save(clusters)
+    typer.echo(
+        f"Saved {len(clusters.synonyms):,} tags from {len(projects):,} projects "
+        f"with min_occurrences {min_occurrences}"
+    )
+
+
+@shift_app.command("report")
+def shift_report(
+    own: Annotated[str | None, typer.Option()] = None,
+    reps: Annotated[int, typer.Option()] = 2000,
+) -> None:
+    population = shift_cache.clusters.load()
+
+    if population is None:
+        typer.echo("Population clusters are missing, run `compass shift clusters`", err=True)
+        raise typer.Exit(code=1)
+
+    sources = require_fresh_sources()
+    lexicon = load_lexicon()
+    histories = shift_cache.load_contributors()
+    store = shift_cache.load_repositories()
+    primary = build_vocabulary(sources, lexicon, population)
+    committed = build_vocabulary(sources, lexicon, require_clusters())
+    variants = [
+        ReportVariant("Primary: population clusters, 100 stars", primary, 100),
+        ReportVariant("Sensitivity: committed clusters, 100 stars", committed, 100),
+        ReportVariant("Sensitivity: population clusters, 500 stars", primary, 500),
+        ReportVariant(
+            f"Post hoc: population clusters, 100 stars, {ENTRY_CAP} entries per contributor",
+            primary,
+            100,
+            ENTRY_CAP,
+        ),
+    ]
+
+    for variant in variants:
+        typer.echo(render_report(run_report(variant, histories, store, reps)) + "\n")
+
+    if own is not None:
+        entries = own_entries(own, histories, store, primary, load_preferences(PREFERENCES_FILE))
+        typer.echo(render_own_entries(own, entries))
 
 
 def main() -> None:

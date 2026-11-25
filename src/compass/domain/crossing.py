@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from compass.domain.classification import tooling_key
 from compass.domain.identity import (
     ContributorIdentity,
@@ -8,7 +10,7 @@ from compass.domain.identity import (
     Stance,
     ToolingRelation,
 )
-from compass.domain.vocabulary import Vocabulary
+from compass.domain.vocabulary import Vocabulary, sibling_compounds
 
 LANGUAGE_SOURCES = frozenset({EvidenceSource.LANGUAGE_BYTES, EvidenceSource.PRIMARY_LANGUAGE})
 
@@ -72,6 +74,25 @@ def tooling_relation(
     return ToolingRelation.UNFAMILIAR, [dominant]
 
 
+def known_meaning(
+    names: list[str],
+    contributor: ContributorIdentity,
+    vocabulary: Vocabulary,
+) -> list[str]:
+    history: defaultdict[str, list[str]] = defaultdict(list)
+
+    for seen in contributor.meaning_history:
+        history[vocabulary.synonym(seen)].append(seen)
+
+    return [
+        name
+        for name in names
+        if any(
+            not sibling_compounds(name, seen) for seen in history.get(vocabulary.synonym(name), [])
+        )
+    ]
+
+
 def meaning_relation(
     project: ProjectIdentity,
     contributor: ContributorIdentity,
@@ -85,8 +106,7 @@ def meaning_relation(
     if declared:
         return MeaningRelation.DECLARED, declared
 
-    known_synonyms = {vocabulary.synonym(name) for name in contributor.meaning_history}
-    known = [name for name in names if vocabulary.synonym(name) in known_synonyms]
+    known = known_meaning(names, contributor, vocabulary)
 
     if known:
         return MeaningRelation.KNOWN, known

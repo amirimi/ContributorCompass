@@ -151,8 +151,10 @@ def build_clusters(
         tooling_parents=inherit_tooling(
             synonyms,
             counts,
-            is_tooling=lambda tag: bool(vocabulary.resolve(tag).on(Axis.TOOLING)),
-            is_claimed=lambda tag: tag in claimed,
+            is_tooling=lambda tag: any(
+                term.axis is Axis.TOOLING for term in vocabulary.claims.get(tag, ())
+            ),
+            is_claimed=lambda tag: bool(vocabulary.resolve(tag).terms),
         ),
     )
 

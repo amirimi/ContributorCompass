@@ -25,7 +25,7 @@ from compass.domain import (
 )
 from tests.vocabulary_fixtures import SOURCES, make_vocabulary
 
-SHARED_AXES = {"cli": 0, "cli tools": 0, "emulator": 1, "nes": 1}
+SHARED_AXES = {"cli": 0, "cli tools": 0, "cli utility": 0, "emulator": 1, "nes": 1}
 
 
 class FakeEmbedder:
@@ -51,6 +51,8 @@ PROJECTS = [
     project("a", ["cli"]),
     project("b", ["cli-tools"]),
     project("c", ["cli-tools"]),
+    project("f", ["cli-utility"]),
+    project("g", ["cli-utility"]),
     project("d", ["emulator", "nes", "hacktoberfest"]),
     project("e", ["emulator", "nes"]),
 ]
@@ -121,8 +123,9 @@ def test_build_groups_variants_and_inherits_tooling() -> None:
     clusters = build()
 
     assert clusters.synonyms["cli-tools"] == clusters.synonyms["cli"]
+    assert clusters.synonyms["cli-utility"] == clusters.synonyms["cli"]
     assert clusters.synonyms["nes"] == clusters.synonyms["emulator"]
-    assert clusters.tooling_parents == {"cli-tools": "cli"}
+    assert clusters.tooling_parents == {"cli-utility": "cli"}
     assert "hacktoberfest" not in clusters.synonyms
     assert "own-topic" in clusters.synonyms
 
@@ -130,7 +133,7 @@ def test_build_groups_variants_and_inherits_tooling() -> None:
 def test_built_clusters_feed_the_vocabulary() -> None:
     vocabulary = make_vocabulary(build())
 
-    assert [term.name for term in vocabulary.resolve("cli-tools").terms] == ["cli"]
+    assert [term.name for term in vocabulary.resolve("cli-utility").terms] == ["cli"]
 
 
 def test_tag_budget_stops_the_build(monkeypatch: pytest.MonkeyPatch) -> None:

@@ -95,12 +95,19 @@ def test_known_language_from_history() -> None:
     assert result.tooling is ToolingRelation.KNOWN
 
 
-def test_related_topic_of_a_known_topic_is_adjacent() -> None:
+def test_topic_whose_page_lists_a_known_topic_is_adjacent() -> None:
+    history = profile(topics=[("vim", 3)])
+    result = crossing(project("Lua", {"Lua": 100}, ["neovim"]), history)
+
+    assert result.meaning is MeaningRelation.ADJACENT
+    assert result.deciding_terms[-1] == "neovim"
+
+
+def test_topic_listed_only_by_a_known_topic_page_is_new() -> None:
     history = profile(topics=[("neovim", 3)])
     result = crossing(project("Lua", {"Lua": 100}, ["vim"]), history)
 
-    assert result.meaning is MeaningRelation.ADJACENT
-    assert result.deciding_terms[-1] == "vim"
+    assert result.meaning is MeaningRelation.NEW
 
 
 def test_unrelated_topic_is_new() -> None:
@@ -131,6 +138,31 @@ def test_synonym_of_a_history_term_is_known() -> None:
     result = crossing(project("Lua", {"Lua": 100}, ["text-editor"]), clusters=clusters)
 
     assert (result.meaning, result.deciding_terms[-1]) == (MeaningRelation.KNOWN, "text-editor")
+
+
+def test_sibling_compound_in_a_history_synonym_group_is_only_adjacent() -> None:
+    group = {"classification": "classification"}
+    group |= {"image-classification": "classification", "text-classification": "classification"}
+    clusters = make_clusters(synonyms=group, families=group)
+    history = profile(topics=[("text-classification", 2)])
+    result = crossing(project("Lua", {"Lua": 100}, ["image-classification"]), history, clusters)
+
+    assert result.meaning is MeaningRelation.ADJACENT
+
+
+def test_spelling_variant_in_a_history_synonym_group_is_known() -> None:
+    group = {"data-visualisation": "data-visualization", "data-visualization": "data-visualization"}
+    clusters = make_clusters(synonyms=group, families=group)
+    history = profile(topics=[("data-visualization", 2)])
+    result = crossing(project("Lua", {"Lua": 100}, ["data-visualisation"]), history, clusters)
+
+    assert result.meaning is MeaningRelation.KNOWN
+
+
+def test_plural_of_a_declared_alias_is_declared() -> None:
+    result = crossing(project("Lua", {"Lua": 100}, ["large-language-models"]))
+
+    assert (result.meaning, result.deciding_terms[-1]) == (MeaningRelation.DECLARED, "llm")
 
 
 def test_family_of_a_history_term_is_only_adjacent() -> None:
